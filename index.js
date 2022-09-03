@@ -5,9 +5,22 @@ const app = express();
 
 app.use(express.json()); //middleware
 
+//create you own diddleware
+app.use((req,res,next)=>{
+  console.log('from the middle ware')
+  next()
+})
+
+app.use((req,res,next)=>{
+ req.requestTime = new Date().toISOString();
+  next()
+})
+
 const getAllTours = (req, res) => {
+  console.log(req.requestTime)
   res.status(200).json({
     status: 'success',
+    reqAt:req.requestTime,
     code: 200,
     results: tours.length,
     data: {
@@ -35,6 +48,7 @@ const getTour = (req, res) => {
       data: tour,
     });
   }
+  
 };
 
 const createTour = (req, res) => {
@@ -105,6 +119,10 @@ const tours = JSON.parse(
 //route
 app.route('/api/v1/tours').get(getAllTours).post(createTour)
 
+app.use((req,res,next)=>{
+  console.log('fHello rom the middle ware')
+  next()
+})
 app.route('/api/v1/tours/:id').get(getTour).patch(updateTour).delete(deleteTour)
 
 const port = 4000;
