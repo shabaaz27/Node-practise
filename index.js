@@ -1,10 +1,13 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan')
 
 const app = express();
 
-app.use(express.json()); //middleware
 
+//1.middlewares
+app.use(morgan('dev'))
+app.use(express.json()); 
 //create you own diddleware
 app.use((req,res,next)=>{
   console.log('from the middle ware')
@@ -15,6 +18,8 @@ app.use((req,res,next)=>{
  req.requestTime = new Date().toISOString();
   next()
 })
+
+//2.Route Headers
 
 const getAllTours = (req, res) => {
   console.log(req.requestTime)
@@ -116,7 +121,7 @@ const tours = JSON.parse(
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
-//route
+//3.route
 app.route('/api/v1/tours').get(getAllTours).post(createTour)
 
 app.use((req,res,next)=>{
@@ -125,6 +130,8 @@ app.use((req,res,next)=>{
 })
 app.route('/api/v1/tours/:id').get(getTour).patch(updateTour).delete(deleteTour)
 
+
+//4.Start Sever
 const port = 4000;
 app.listen(port, () => {
   console.log('Listening port ', { port });
