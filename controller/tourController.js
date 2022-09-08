@@ -40,10 +40,7 @@ exports.getAllTours = (req, res) => {
 exports.getTour = (req, res) => {
   console.log(req.params.id);
   const id = req.params.id * 1;
-
-  const tour = tours.find((item) => item.id === id);
-
-  
+    const tour = tours.find((item) => item.id === id);
     res.status(200).json({
       status: 'success',
       code: 200,
