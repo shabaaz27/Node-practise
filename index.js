@@ -109,6 +109,41 @@ const deleteTour = (req, res) => {
     });
   }
 };
+
+const createUser = (req,res)=>{
+  res.status(500).json({
+    status:500,
+    message:'This route not yet defined'
+  })
+}
+
+const updateUser = (req,res)=>{
+  res.status(500).json({
+    status:500,
+    message:'This route not yet defined'
+  })
+}
+const deleteUser = (req,res)=>{
+  res.status(500).json({
+    status:500,
+    message:'This route not yet defined'
+  })
+}
+const getUser = (req,res)=>{
+  res.status(500).json({
+    status:500,
+    message:'This route not yet defined'
+  })
+}
+
+const getAllUsers = (req,res)=>{
+  res.status(500).json({
+    status:500,
+    message:'This route not yet defined'
+  })
+}
+
+
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
@@ -122,15 +157,18 @@ const tours = JSON.parse(
 // app.delete('/api/v1/tours/:id', deleteTour);
 
 //3.route
-app.route('/api/v1/tours').get(getAllTours).post(createTour)
-
-app.use((req,res,next)=>{
-  console.log('fHello rom the middle ware')
-  next()
-})
-app.route('/api/v1/tours/:id').get(getTour).patch(updateTour).delete(deleteTour)
 
 
+const tourRouter = express.Router() //middleware
+const userRouter = express.Router()
+tourRouter.route('/').get(getAllTours).post(createTour)
+tourRouter.route('/:id').get(getTour).patch(updateTour).delete(deleteTour)
+
+userRouter.route('/').get(getAllUsers).post(createUser)
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser)
+// mounting routers
+app.use('/api/v1/tours',tourRouter)
+app.use('/api/v1/users',userRouter)
 //4.Start Sever
 const port = 4000;
 app.listen(port, () => {
