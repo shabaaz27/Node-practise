@@ -31,7 +31,5 @@ app.use('/api/v1/users',userRouter)
 
 
 //4.Start Sever
-const port = 4000;
-app.listen(port, () => {
-  console.log('Listening port ', { port });
-});
+
+module.exports = app
