@@ -10,6 +10,10 @@ const app = express();
 //1.middlewares
 app.use(morgan('dev'))
 app.use(express.json()); 
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 //create you own middleware
 app.use((req,res,next)=>{
   console.log('from the middle ware')
