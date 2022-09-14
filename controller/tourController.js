@@ -73,10 +73,7 @@ exports.getTour = async (req, res) => {
 
 exports.createTour = async (req, res) => {
   try {
-
-  
    const newTour = await Tour.create(req.body)
-
   res.status(201).json({
     status: 'success',
     code: 201,
@@ -94,24 +91,46 @@ exports.createTour = async (req, res) => {
 };
 
 //just test update  not proper function return
-exports.updateTour = (req, res) => {
-  const id = req.params.id * 1;
-
-
+exports.updateTour = async (req, res) => {
+  try{
+    const tour = await Tour.findByIdAndUpdate(req.params.id,req.body,{new:true,runValidators:true})
     res.status(200).json({
       status: 'success',
       code: 200,
       message: 'TOUR updated',
+      data:{
+        tour
+      }
     });
+  }
+  catch(err){
+    res.status(400).json({
+      status:'fail',
+      message:'Invalid Data sent'
+    })
+  }
+
+   
   
 };
-exports.deleteTour = (req, res) => {
-    const id = req.params.id * 1;
+exports.deleteTour = async (req, res) => {
+
+  try{
+    await Tour.findByIdAndDelete(req.params.id)
+
     // tours.find((item,index)=> item.id ==id ? tours.splice(index,1):null)
-    return res.status(204).json({
-      status: 'success',
-      message: 'Data deleted',
-      data: null,
+     res.json({
+      status: '204',
+      message: 'Data deleted Successfully',
     });
+
+  }
+  catch(err){
+    res.status(400).json({
+      status:'fail',
+      message:'Invalid Data sent'
+    })
+  }
+    
   
 };
