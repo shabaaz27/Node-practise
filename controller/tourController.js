@@ -28,17 +28,34 @@ const Tour = require('../modals/tourModal')
 exports.getAllTours = async (req, res) => {
 
   try{
-  const tourData = await Tour.find()
-  console.log(req.requestTime);
-  res.status(200).json({
-    status: 'success',
-    reqAt: req.requestTime,
-    code: 200,
-    results: tourData.length,
-    data: {
-      tourData,
-    },
-  });
+
+    //1.filtering
+    const queryObj = {...req.query}
+    const excludedFields = ['page','sort','limit','fields']
+    excludedFields.forEach(el=> delete queryObj[el])
+    console.log(req.query,queryObj)
+
+    //2.advance filtering
+    let queryStr = JSON.stringify(queryObj)
+    queryStr=queryStr.replace(/\b(gte|gt|lte|lt)\b/g,match => `$${match}`)
+    console.log(JSON.parse(queryStr))
+
+    const query = await Tour.find(JSON.parse(queryStr))
+
+    const tourData = await query;
+
+    res.status(200).json({
+      status: 'success',
+      reqAt: req.requestTime,
+      code: 200,
+      results: tourData.length,
+      data: {
+        tourData,
+      },
+    });
+  
+
+
 }
 catch(err){
     res.status(404).json(
