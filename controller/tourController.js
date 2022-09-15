@@ -27,8 +27,8 @@ const Tour = require('../modals/tourModal')
 
 exports.getAllTours = async (req, res) => {
 
-  try{
-
+  try{ 
+    
     //1.filtering
     const queryObj = {...req.query}
     const excludedFields = ['page','sort','limit','fields']
@@ -40,9 +40,12 @@ exports.getAllTours = async (req, res) => {
     queryStr=queryStr.replace(/\b(gte|gt|lte|lt)\b/g,match => `$${match}`)
     console.log(JSON.parse(queryStr))
 
-    const query = await Tour.find(JSON.parse(queryStr))
+    //3.Sorting
+    let query = Tour.find(JSON.parse(queryStr))
+    console.log(`${req.query.sort}`)
+    query = req.query.sort ? query.sort(req.query.sort) : query;
 
-    const tourData = await query;
+    let tourData = await query;
 
     res.status(200).json({
       status: 'success',
@@ -53,9 +56,6 @@ exports.getAllTours = async (req, res) => {
         tourData,
       },
     });
-  
-
-
 }
 catch(err){
     res.status(404).json(
