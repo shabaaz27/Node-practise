@@ -51,6 +51,13 @@ exports.getAllTours = async (req, res) => {
       query = query.sort('-createdAt')
     }
 
+    //4) Field Limiting
+    if(req.query.fields){
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields) //this method is called projecting 
+    }else{
+      query = query.select('-__v') //excluding them for client response
+    }
 
 
     let tourData = await query;
