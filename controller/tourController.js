@@ -48,7 +48,7 @@ exports.getAllTours = async (req, res) => {
       console.log(sortBy)
       query =  query.sort(sortBy);
     }else{
-      query = query.sort('-createdAt')
+      query = query.sort('createdAt')
     }
 
     //4) Field Limiting
@@ -57,6 +57,21 @@ exports.getAllTours = async (req, res) => {
       query = query.select(fields) //this method is called projecting 
     }else{
       query = query.select('-__v') //excluding them for client response
+    }
+
+    //5) pagination
+    //page=2&limit=10
+
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page-1) * limit;
+    console.log(skip,page,limit)
+    query = query.skip(skip).limit(limit)
+
+    if(req.query.page){
+      const numTours = await Tour.countDocuments()
+      console.log(numTours)
+      if(skip >= numTours) throw new Error({err:'This page does not exist'})
     }
 
 
