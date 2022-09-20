@@ -140,3 +140,38 @@ exports.deleteTour = async (req, res) => {
     });
   }
 };
+
+
+
+exports.getTourStats = async (req,res) =>{
+  try{
+    // $match Filters the document stream to allow only matching documents to pass unmodified into the next pipeline stage. 
+    const stats= await Tour.aggregate([
+      {
+        $match: {ratingAverage:{$gte:4.5}}
+      },
+      {
+        $group:{
+          _id:null,
+          avgRating:{$avg: '$ratingAverage'},
+          avgPrice:{$avg:'$price'},
+          minPrice:{$min:'$price'},
+          maxPrice:{$max:'$price'}
+        }
+      }
+    ]);
+    res.status(200).json({
+      status:'success',
+      data:{
+        stats
+      }
+
+    })
+  }
+  catch(err){
+      res.status(404).json({
+        status:'fail',
+        message:err
+      })
+}
+}
