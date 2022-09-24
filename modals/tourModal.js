@@ -81,18 +81,34 @@ tourSchema.virtual('durationWeeks').get(function(){
 
 //QUERY MIDDLEWARE
 
-tourSchema.pre(/^find/,function(next){
-    this.find({secretTour :{$eq:true}})
-    this.start = Date.now()
+// tourSchema.pre(/^find/,function(next){
+//     this.find({secretTour :{$eq:true}})
+//     this.start = Date.now()
+//     next()
+// })
+
+// tourSchema.post(/^find/,function(doc,next){
+   
+//     console.log(`Query took ${Date.now() -this.start} millseconds`)
+//     console.log(doc)
+//     next()
+// })
+
+
+//AGGREGATION MIDDLEWARE
+
+tourSchema.pre('aggregate',function(next){
+    this.pipeline().unshift({
+        $match:{
+            secretTour:{$ne:true}
+        }
+    })
+
+    console.log(this.pipeline())
     next()
 })
 
-tourSchema.post(/^find/,function(doc,next){
-   
-    console.log(`Query took ${Date.now() -this.start} millseconds`)
-    console.log(doc)
-    next()
-})
+
   const Tour = mongoose.model('Tour',tourSchema)
 
 
