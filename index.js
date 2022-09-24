@@ -20,10 +20,10 @@ app.use((req, res, next) => {
   next();
 });
 //create you own middleware
-app.use((req, res, next) => {
-  console.log('from the middle ware');
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('from the middle ware');
+//   next();
+// });
 
 //old way
 // app.get('/api/v1/tours', getAllTours);
@@ -37,6 +37,14 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', router);
 app.use('/api/v1/users', userRouter);
 
-//4.Start Sever
+
+// handling unhandled routes
+app.all('*',(req,res,next)=>{
+  res.status(404).json({
+    status:'failed',
+    message:`Can't find ${req.originalUrl} on this server`
+  })
+})
+
 
 module.exports = app;
